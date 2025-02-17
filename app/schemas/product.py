@@ -19,3 +19,7 @@ class Product(CustomBaseModel):
         if value <= 0:
             raise ValueError('Price can\'t be lower or equal to 0')
         return value 
+    
+class ProductInput(CustomBaseModel):
+    category_slug: str
+    product: Product

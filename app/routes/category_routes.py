@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response,status
+from fastapi import APIRouter, Depends, Response, status
 from app.schemas.category import Category
 from sqlalchemy.orm import Session
 from app.routes.deps import get_db_session
