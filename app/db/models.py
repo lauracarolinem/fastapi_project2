@@ -23,5 +23,10 @@ class Product(Base):
     #criar relaçoes entre produto e categoria
     #ou seja, poder saber qual a categoria do produto diretamente, por exemplo: product.categories.name
     category = relationship('Category', back_populates='products')
-    
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column('id', Integer, primary_key=True, autoincrement=True)
+    username = Column('username', String, nullable=False, unique=True)
+    password = Column('password', String, nullable=False)
     
