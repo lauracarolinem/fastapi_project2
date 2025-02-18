@@ -74,5 +74,19 @@ def test_update_product_invalid_id(db_session, product_on_db):
     
     with pytest.raises(HTTPException):
         uc.update_product(id=1, product=product)
+        
+def test_delete_product(db_session, product_on_db):
+    uc = ProductUseCases(db_session=db_session)
+    uc.delete_product(id=product_on_db.id)
+    
+    product_on_db = db_session.query(ProductModel).all()
+    
+    assert len(product_on_db) == 0
+    
+def test_delete_non_existed_product(db_session):
+    uc = ProductUseCases(db_session=db_session)
+    
+    with pytest.raises(HTTPException):
+        uc.delete_product(id=1)
    
     
