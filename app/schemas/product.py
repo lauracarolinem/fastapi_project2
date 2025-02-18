@@ -1,5 +1,5 @@
 from app.schemas.base import CustomBaseModel
-from app.schemas.category import Category
+from app.schemas.category import Category, CategoryOutput
 from pydantic import field_validator
 import re
 
@@ -29,4 +29,7 @@ class ProductInput(CustomBaseModel):
 
 class ProductOutput(Product):
     id: int
-    category: Category
+    category: CategoryOutput
+    
+    class Config:
+        orm_mode=True
