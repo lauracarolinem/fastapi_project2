@@ -26,6 +26,7 @@ def list_categories(
     
     return response
 
+
 @router.delete('/delete/{id}', description="Delete category")
 def delete_category(
     id:int,
