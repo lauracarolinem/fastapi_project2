@@ -3,6 +3,7 @@ from app.schemas.product import Product, ProductOutput #validacao
 from app.use_cases.product import ProductUseCases # ainda não foi criado no inicio desse arquivo
 import pytest
 from fastapi.exceptions import HTTPException
+from fastapi_pagination import Page
 
 def test_add_product_uc(db_session, categories_on_db):
     uc = ProductUseCases(db_session)
@@ -89,30 +90,30 @@ def test_delete_non_existed_product(db_session):
     with pytest.raises(HTTPException):
         uc.delete_product(id=1)
 
-def test_list_products(db_session, products_on_db):
+def test_list_products_uc(db_session, products_on_db):
     uc = ProductUseCases(db_session=db_session)
     
-    products = uc.list_products()
+    page = uc.list_products(page=1, size=2)
     
-    for product in products_on_db:
-        db_session.refresh(product)
+    assert type(page) == Page
+    assert len(page.items) == 2
+    assert page.total == 4
+    assert page.page == 1
+    assert page.size == 2
+    assert page.pages == 2
     
-    assert len(products) == 4
-    assert type(products[0]) == ProductOutput
-    assert products[0].name == products_on_db[0].name
-    assert products[0].category.name == products_on_db[0].category.name
+    assert page.items[0].name == products_on_db[0].name
+    assert page.items[0].category.name == products_on_db[0].category.name
     
-def test_list_products_with_search(db_session, products_on_db):
+def test_list_products_uc_with_search(db_session, products_on_db):
     uc = ProductUseCases(db_session=db_session)
     
-    products = uc.list_products(search='mike')
-    
-    for product in products_on_db:
-        db_session.refresh(product)
-    
-    assert len(products) == 3
-    assert type(products[0]) == ProductOutput
-    assert products[0].name == products_on_db[0].name
-    assert products[0].category.name == products_on_db[0].category.name
+    page = uc.list_products(search='mike')
+
+    assert type(page) == Page
+    assert len(page.items) == 3
+
+    assert page.items[0].name == products_on_db[0].name
+    assert page.items[0].category.name == products_on_db[0].category.name
     
     
