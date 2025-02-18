@@ -1,4 +1,5 @@
 from app.schemas.base import CustomBaseModel
+from app.schemas.category import Category
 from pydantic import field_validator
 import re
 
@@ -7,6 +8,7 @@ class Product(CustomBaseModel):
     slug: str
     price: float
     stock: int
+    
     
     @field_validator('slug')
     def validate_slug(cls, value):
@@ -23,3 +25,8 @@ class Product(CustomBaseModel):
 class ProductInput(CustomBaseModel):
     category_slug: str
     product: Product
+    
+
+class ProductOutput(Product):
+    id: int
+    category: Category

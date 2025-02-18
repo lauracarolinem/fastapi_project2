@@ -1,9 +1,10 @@
 from app.db.models import Product as ProductModel #modelo
 from app.db.models import Category as CategoryModel #modelo
-from app.schemas.product import Product #validacao
+from app.schemas.product import Product, ProductOutput #validacao
 from sqlalchemy.orm import Session
 from fastapi.exceptions import HTTPException
 from fastapi import status
+from sqlalchemy import or_
 
 class ProductUseCases:
     def __init__(self, db_session: Session):
@@ -42,4 +43,27 @@ class ProductUseCases:
         
         self.db_session.delete(product_on_db)
         self.db_session.commit()
+        
+    def list_products(self, search: str = ''):
+        products_on_db = self.db_session.query(ProductModel).filter(
+            or_(
+                ProductModel.name.ilike(f'%{search}%'), # case insensitive e procura por substrings
+                ProductModel.slug.ilike(f'%{search}%') 
+            )
+            ).all()
+        
+        products = [
+            self.serialize_product(product_on_db)
+            for product_on_db in products_on_db
+        ]
+        
+        return products
+        
+    def serialize_product(self, product_on_db: ProductModel):
+        product_dict = product_on_db.__dict__
+        product_dict['category'] = product_on_db.category.__dict__
+        
+        return ProductOutput(**product_dict)
+        
+        
         

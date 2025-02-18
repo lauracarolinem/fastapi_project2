@@ -1,4 +1,5 @@
-from app.schemas.product import Product, ProductInput
+from app.schemas.product import Product, ProductInput, ProductOutput
+from app.schemas.category import Category
 import pytest
 
 #validação
@@ -74,5 +75,28 @@ def test_product_input_schema():
             "slug": "camisa-mike",
             "price": 22.99,
             "stock": 22
+        }
+    }
+    
+def test_product_output_schema():
+    category = Category(name='Roupa', slug='roupa')
+    product_output = ProductOutput(
+        id=1,
+        name='Camisa',
+        slug='camisa',
+        price=10,
+        stock=10,
+        category=category
+    )
+    
+    assert product_output.model_dump() == {
+        "id": 1,
+        "name": "Camisa",
+        "slug": "camisa",
+        "price": 10,
+        "stock": 10,
+        "category": {
+            "name": "Roupa",
+            "slug": "roupa"
         }
     }
